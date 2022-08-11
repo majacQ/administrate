@@ -46,16 +46,21 @@ end
 
 ## Customizing Actions
 
-To enable or disable certain actions you could override `valid_action?` method in your dashboard controller like this:
+To disable certain actions globally, you can disable their
+routes in `config/routes.rb`, using the usual Rails
+facilities for this. For example:
 
 ```ruby
-# disable 'edit' and 'destroy' links
-def valid_action?(name, resource = resource_class)
-  %w[edit destroy].exclude?(name.to_s) && super
+Rails.application.routes.draw do
+  # ...
+  namespace :admin do
+    # ...
+
+    # Payments can only be listed or displayed
+    resources :payments, only: [:index, :show]
+  end
 end
 ```
-
-Action is one of `new`, `edit`, `show`, `destroy`.
 
 ## Customizing Default Sorting
 
@@ -69,4 +74,22 @@ end
 def default_sorting_direction
   :desc
 end
+```
+
+## Customizing Redirects after actions
+
+To set custom redirects after the actions `create`, `update` and `destroy` you can override `after_resource_created_path`, `after_resource_updated_path` or `after_resource_destroyed_path` like this:
+
+```ruby
+    def after_resource_destroyed_path(_requested_resource)
+      { action: :index, controller: :some_other_resource }
+    end
+
+    def after_resource_created_path(requested_resource)
+      [namespace, requested_resource.some_other_resource]
+    end
+
+    def after_resource_updated_path(requested_resource)
+      [namespace, requested_resource.some_other_resource]
+    end
 ```

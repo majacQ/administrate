@@ -39,6 +39,18 @@ describe "documentation navigation" do
     expect(page).to have_content("The MIT License (MIT)")
   end
 
+  it "shows the Security Policy in both forms" do
+    visit("/security")
+
+    expect(page).to have_css("div.main h1", text: "Security Policy")
+    expect(page).to have_content("security inquiries")
+
+    visit("/SECURITY.md")
+
+    expect(page).to have_css("div.main h1", text: "Security Policy")
+    expect(page).to have_content("security inquiries")
+  end
+
   it "shows other docs pages" do
     visit("/getting_started")
 
@@ -50,7 +62,7 @@ describe "documentation navigation" do
     visit("/guides/hiding_dashboards_from_sidebar")
 
     expect(page).to have_css("div.main h1", text: "Hiding Dashboards from")
-    expect(page).to have_content("Resources can be removed form the sidebar")
+    expect(page).to have_content("Resources can be removed from the sidebar")
   end
 
   it "links to each documentation page" do

@@ -25,14 +25,10 @@ module AdministratePrototype
     end
 
     config.action_controller.action_on_unpermitted_parameters = :raise
+    config.active_record.time_zone_aware_types = %i(datetime time)
 
-    if Rails::VERSION::MAJOR < 5
-      # Do not swallow errors in after_commit/after_rollback callbacks.
-      config.active_record.raise_in_transactional_callbacks = true
-    end
-
-    if Rails::VERSION::MAJOR >= 5
-      config.active_record.time_zone_aware_types = %i(datetime time)
-    end
+    # Opt-out of FLoC: https://amifloced.org/
+    config.action_dispatch.
+      default_headers["Permissions-Policy"] = "interest-cohort=()"
   end
 end
